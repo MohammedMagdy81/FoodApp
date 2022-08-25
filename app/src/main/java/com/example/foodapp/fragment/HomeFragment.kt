@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.foodapp.Constants
-import com.example.foodapp.MealActivity
+import com.example.foodapp.activities.CategoryMealsActivity
+import com.example.foodapp.activities.MainActivity
+import com.example.foodapp.activities.MealActivity
 import com.example.foodapp.adapter.CategoriesAdapter
 import com.example.foodapp.adapter.PopularMealAdapter
 import com.example.foodapp.databinding.FragmentHomeBinding
@@ -21,17 +23,18 @@ import com.example.foodapp.pojo.Meal
 import com.example.foodapp.viewModel.HomeViewModel
 
 class HomeFragment : Fragment() {
+
     private lateinit var homeBinding:FragmentHomeBinding
     private lateinit var homeViewModel:HomeViewModel
     private lateinit var randomMeal:Meal
     lateinit var popularMealAdapter:PopularMealAdapter
     lateinit var categoriesAdapter: CategoriesAdapter
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeViewModel= ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel= (activity as MainActivity).homeViewModel
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,11 +48,17 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prepareRecyclerView()
         prepareCategoriesRecyclerView()
+
+        initClickListener()
+
+
+
         homeViewModel.getRandomMeal()
         observeRandomViewModel()
-        initClickListener()
+
         homeViewModel.getPopularItem("Seafood")
         observePopularItem()
+
         homeViewModel.getCategories()
         observeCategories()
 
@@ -85,14 +94,20 @@ class HomeFragment : Fragment() {
 
     private fun initClickListener() {
         homeBinding.cardRandomMeal.setOnClickListener {
-            val intent= Intent(activity,MealActivity::class.java)
+            val intent= Intent(activity, MealActivity::class.java)
             sendDataToMealActivity(intent)
         }
         popularMealAdapter.onItemClick={meal->
-            val intent=Intent(activity,MealActivity::class.java)
+            val intent=Intent(activity, MealActivity::class.java)
             intent.putExtra(Constants.MEAL_ID,meal.idMeal)
             intent.putExtra(Constants.MEAL_NAME,meal.strMeal)
             intent.putExtra(Constants.MEAL_THUMB,meal.strMealThumb)
+            startActivity(intent)
+        }
+
+        categoriesAdapter.onItemClick={category->
+            val intent= Intent(activity,CategoryMealsActivity::class.java)
+            intent.putExtra(Constants.CATEGORY_NAME,category.strCategory)
             startActivity(intent)
         }
     }

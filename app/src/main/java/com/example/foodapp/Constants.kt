@@ -5,4 +5,6 @@ object Constants {
     const val MEAL_ID="mealID"
     const val MEAL_NAME="mealName"
     const val MEAL_THUMB="mealThumb"
+    const val CATEGORY_NAME="categoryName"
+    const val DATABASE_NAME="db-Name"
 }

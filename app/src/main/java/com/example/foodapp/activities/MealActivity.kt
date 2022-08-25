@@ -1,13 +1,18 @@
-package com.example.foodapp
+package com.example.foodapp.activities
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.foodapp.Constants
 import com.example.foodapp.databinding.ActivityMealBinding
+import com.example.foodapp.db.MealsDatabase
+import com.example.foodapp.pojo.Meal
+import com.example.foodapp.viewModel.HomeViewModel
 import com.example.foodapp.viewModel.MealDetailsViewModel
 
 class MealActivity : AppCompatActivity() {
@@ -15,14 +20,18 @@ class MealActivity : AppCompatActivity() {
    lateinit var mealName:String
    lateinit var mealThumb:String
    lateinit var mealYoutubeLink:String
+   lateinit var meal:Meal
 
     lateinit var binding:ActivityMealBinding
     lateinit var mealDetailsViewModel: MealDetailsViewModel
+    lateinit var homeViewModel: HomeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMealBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        homeViewModel=ViewModelProvider(this)[HomeViewModel::class.java]
+
         mealDetailsViewModel= ViewModelProvider(this)[MealDetailsViewModel::class.java]
 
         getMealInformation()
@@ -41,12 +50,17 @@ class MealActivity : AppCompatActivity() {
             val intent=Intent(Intent.ACTION_VIEW,Uri.parse(mealYoutubeLink))
             startActivity(intent)
         }
+        binding.activityMealFab.setOnClickListener {
+            homeViewModel.insertMeal(meal ,applicationContext)
+            Toast.makeText(this, "This Meal Saved Successfully ", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun observeToMealDetails() {
         mealDetailsViewModel.getMealDetailsLiveData().observe(this) {meal->
             onResponseCase()
-            mealYoutubeLink=meal.strYoutube
+            this.meal=meal
+            mealYoutubeLink=meal.strYoutube!!
             binding.activityMealTvCategory.text="Category: ${meal.strCategory}"
             binding.activityMealTvArea.text="Area: ${meal.strArea}"
             binding.activityMealTvDetails.text= meal.strInstructions

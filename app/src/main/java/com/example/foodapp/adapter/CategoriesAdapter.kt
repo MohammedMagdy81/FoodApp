@@ -11,6 +11,7 @@ import com.example.foodapp.pojo.CategoryList
 
 class CategoriesAdapter:RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>() {
 
+    var onItemClick:((Category)-> Unit)?=null
     private var categoriesList= ArrayList<Category>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -25,6 +26,9 @@ class CategoriesAdapter:RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHol
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
         holder.bind(categoriesList[position])
+        holder.itemView.setOnClickListener {
+            onItemClick!!.invoke(categoriesList[position])
+        }
     }
 
     override fun getItemCount(): Int {

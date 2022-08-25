@@ -1,20 +1,23 @@
 package com.example.foodapp.viewModel
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.foodapp.db.MealsDatabase
 import com.example.foodapp.pojo.*
 import com.example.foodapp.retrofit.RetrofitInstance
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel(application: Application): AndroidViewModel(application) {
 
     private var randomMealLiveData=MutableLiveData<Meal>()
     private var popularItemLiveData=MutableLiveData<List<MealsByCategory>>()
     private var categoriesLiveData= MutableLiveData<List<Category>>()
+    private val favoriteMealsLiveData= MealsDatabase.getInstance(getApplication()).mealDao().getAllMeals()
 
     fun getRandomMeal(){
         RetrofitInstance.api.getRandomMeal().enqueue(object : Callback<MealList> {
@@ -74,4 +77,20 @@ class HomeViewModel: ViewModel() {
     fun observeCategoriesLiveData(): LiveData<List<Category>>{
         return categoriesLiveData
     }
+
+    fun observeFavoriteMealsLiveData():LiveData<List<Meal>>{
+        return favoriteMealsLiveData
+    }
+
+    fun deleteMeal(meal:Meal, context: Context){
+        viewModelScope.launch {
+            MealsDatabase.getInstance(context).mealDao().deleteMeal(meal)
+        }
+    }
+    fun insertMeal(meal:Meal, context: Context){
+        viewModelScope.launch {
+            MealsDatabase.getInstance(context).mealDao().upsertMeal(meal)
+        }
+    }
+
 }

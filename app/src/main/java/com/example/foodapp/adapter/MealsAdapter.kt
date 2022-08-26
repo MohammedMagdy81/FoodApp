@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodapp.databinding.ItemMealsBinding
 import com.example.foodapp.pojo.Meal
+import com.example.foodapp.pojo.MealsByCategory
 
 class MealsAdapter :RecyclerView.Adapter<MealsAdapter.FavoriteMealsViewHolder>(){
 
+    lateinit var onItemClick:((Meal)->Unit)
 
-    private val diffUtil= object :DiffUtil.ItemCallback<Meal>(){
+    var diffUtil= object :DiffUtil.ItemCallback<Meal>(){
+
         override fun areItemsTheSame(oldItem: Meal, newItem: Meal): Boolean {
             return oldItem.idMeal==newItem.idMeal
         }
@@ -21,8 +24,9 @@ class MealsAdapter :RecyclerView.Adapter<MealsAdapter.FavoriteMealsViewHolder>()
             return oldItem==newItem
         }
     }
-    var differ=AsyncListDiffer(this,diffUtil)
 
+
+    var differ=AsyncListDiffer(this,diffUtil)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMealsViewHolder {
         val itemBinding=ItemMealsBinding.inflate(LayoutInflater.from(parent.context),parent,false)
@@ -36,6 +40,9 @@ class MealsAdapter :RecyclerView.Adapter<MealsAdapter.FavoriteMealsViewHolder>()
             .load(meal.strMealThumb)
             .into(holder.binding.itemMealsImage)
 
+        holder.itemView.setOnClickListener {
+            onItemClick.invoke(meal)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -1,5 +1,6 @@
 package com.example.foodapp.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,7 +9,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodapp.Constants
 import com.example.foodapp.activities.MainActivity
+import com.example.foodapp.activities.MealActivity
 import com.example.foodapp.adapter.MealsAdapter
 import com.example.foodapp.databinding.FragmentFavoritesBinding
 import com.example.foodapp.viewModel.HomeViewModel
@@ -39,6 +42,7 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prepareRecyclerView()
         observeFavoriteLiveData()
+        initListener()
 
         // this callback is to make swipe to delete item and show snackbar
         val itemTouchHelper=object :ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -53,18 +57,29 @@ class FavoritesFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position= viewHolder.adapterPosition
-                homeViewModel.deleteMeal(favoriteAdapter.differ.currentList[position],requireContext())
+                val meal =favoriteAdapter.differ.currentList[position]
+                homeViewModel.deleteMeal(meal,requireContext())
                 Snackbar.make(requireView(),"Meal Deleted !" ,Snackbar.LENGTH_LONG)
                     .setAction("UNDO") {
                         homeViewModel.insertMeal(
                             // TODO this is error in this line
-                            favoriteAdapter.differ.currentList[position],
+                            meal,
                            requireContext()
                         )
                     }.show()
             }
         }
         ItemTouchHelper(itemTouchHelper).attachToRecyclerView(binding.favoriteRecyclerView)
+    }
+
+    private fun initListener() {
+        favoriteAdapter.onItemClick={meal->
+            val intent= Intent(activity, MealActivity::class.java)
+            intent.putExtra(Constants.MEAL_ID,meal.idMeal)
+            intent.putExtra(Constants.MEAL_NAME,meal.strMeal)
+            intent.putExtra(Constants.MEAL_THUMB,meal.strMealThumb)
+            startActivity(intent)
+        }
     }
 
 

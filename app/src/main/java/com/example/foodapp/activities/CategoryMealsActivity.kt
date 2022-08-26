@@ -1,5 +1,6 @@
 package com.example.foodapp.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
@@ -26,10 +27,19 @@ class CategoryMealsActivity : AppCompatActivity() {
 
         categoryMealsViewModel.getMealsByCategory(categoryName!!)
         prepareCategoryMealsRecyclerView()
+
         categoryMealsViewModel.observeMealsLiveData().observe(this) {
             binding.categoryMealsTvCount.text=categoryName+" : "+it.size.toString()
             categoryMealsAdapter.setMeals(it as ArrayList<MealsByCategory>)
 
+        }
+
+        categoryMealsAdapter.onItemClick={meal->
+            val intent= Intent(this, MealActivity::class.java)
+            intent.putExtra(Constants.MEAL_ID,meal.idMeal)
+            intent.putExtra(Constants.MEAL_NAME,meal.strMeal)
+            intent.putExtra(Constants.MEAL_THUMB,meal.strMealThumb)
+            startActivity(intent)
         }
 
 

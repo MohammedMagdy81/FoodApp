@@ -1,5 +1,6 @@
 package com.example.foodapp.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,8 +9,10 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.foodapp.Constants
 import com.example.foodapp.R
 import com.example.foodapp.activities.MainActivity
+import com.example.foodapp.activities.MealActivity
 import com.example.foodapp.adapter.MealsAdapter
 import com.example.foodapp.databinding.FragmentSearchBinding
 import com.example.foodapp.viewModel.HomeViewModel
@@ -38,8 +41,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareRecyclerView()
-
         observeSearchQueryLiveData()
+        initClickListener()
 
         var searchJob:Job?=null
         binding.edSearchBox.addTextChangedListener {
@@ -50,6 +53,17 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
+    private fun initClickListener() {
+        searchAdapter.onItemClick= {meal->
+            val intent= Intent(activity, MealActivity::class.java)
+            intent.putExtra(Constants.MEAL_ID,meal.idMeal)
+            intent.putExtra(Constants.MEAL_NAME,meal.strMeal)
+            intent.putExtra(Constants.MEAL_THUMB,meal.strMealThumb)
+            startActivity(intent)
+        }
+    }
+
 
     private fun observeSearchQueryLiveData() {
         homeViewModel.observeSearchMealsLiveData().observe(viewLifecycleOwner) {

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/bottom_sheet"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.bottomsheet.MealBottomSheetFragment">
+
+    <ImageView
+        android:id="@+id/bottomsheet_image"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_90sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@color/g_black"
+        android:scaleType="centerCrop"
+        android:layout_margin="@dimen/_5sdp"
+        />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/_6sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bottomsheet_image"
+        app:layout_constraintTop_toTopOf="@id/bottomsheet_image">
+
+        <TextView
+            android:id="@+id/bottomsheet_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/myfont"
+            android:text="Egypt"
+            android:textColor="@color/g_black"
+            android:textSize="@dimen/_16ssp"
+            android:drawablePadding="@dimen/_5sdp"
+            app:drawableStartCompat="@drawable/ic_location"
+            app:drawableTint="@color/g_black" />
+
+        <TextView
+            android:id="@+id/bottomsheet_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/myfont"
+            android:text="Beef"
+            android:textColor="@color/g_black"
+            android:textSize="@dimen/_16ssp"
+            android:drawablePadding="@dimen/_5sdp"
+            app:drawableStartCompat="@drawable/ic_category"
+            app:drawableTint="@color/g_black" />
+
+    </LinearLayout>
+
+        <TextView
+            android:id="@+id/bottomsheet_meal_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fish and meet "
+            android:textSize="@dimen/_14ssp"
+            android:textColor="@color/g_black"
+            android:fontFamily="@font/myfont"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintStart_toStartOf="@id/linearLayout"
+            android:layout_margin="@dimen/_6sdp"
+            />
+       <TextView
+           android:id="@+id/bottomsheet_meal_readmore"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textColor="@color/g_black"
+           android:fontFamily="@font/myfont"
+           android:textSize="@dimen/_14ssp"
+           android:text="ReadMore"
+           app:layout_constraintTop_toBottomOf="@id/bottomsheet_meal_name"
+           app:layout_constraintStart_toStartOf="@id/linearLayout"
+           android:layout_margin="@dimen/_6sdp"
+           />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

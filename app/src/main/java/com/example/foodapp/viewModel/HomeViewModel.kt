@@ -18,6 +18,14 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
     private var popularItemLiveData=MutableLiveData<List<MealsByCategory>>()
     private var categoriesLiveData= MutableLiveData<List<Category>>()
     private val favoriteMealsLiveData= MealsDatabase.getInstance(getApplication()).mealDao().getAllMeals()
+    private val bottomSheetMealLiveData=MutableLiveData<Meal>()
+    private var searchMealsLiveData=MutableLiveData<List<Meal>>()
+
+
+    init {
+        // call this function here to fix rotate problem because the activity recreated when rotated
+        getRandomMeal()
+    }
 
     fun getRandomMeal(){
         RetrofitInstance.api.getRandomMeal().enqueue(object : Callback<MealList> {
@@ -91,6 +99,47 @@ class HomeViewModel(application: Application): AndroidViewModel(application) {
         viewModelScope.launch {
             MealsDatabase.getInstance(context).mealDao().upsertMeal(meal)
         }
+    }
+
+    fun getMealById(id :String){
+        RetrofitInstance.api.getMealDetailsById(id).enqueue(object :Callback<MealList>{
+            override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
+                if (response.isSuccessful){
+                    val meal= response.body()!!.meals.first()
+                    bottomSheetMealLiveData.value=meal
+                }
+                else
+                    return
+            }
+
+            override fun onFailure(call: Call<MealList>, t: Throwable) {
+                Log.d("onFailure", "onFailure: ${t.localizedMessage}")
+            }
+
+        })
+    }
+
+    fun observeBottomSheetMealLiveData():LiveData<Meal>{
+        return bottomSheetMealLiveData
+    }
+
+    fun searchMeals(searchKey:String){
+        RetrofitInstance.api.searchMeals(searchKey).enqueue(object :Callback<MealList>{
+            override fun onResponse(call: Call<MealList>, response: Response<MealList>) {
+                if (response.isSuccessful){
+                    searchMealsLiveData.value=response.body()!!.meals
+                }
+            }
+
+            override fun onFailure(call: Call<MealList>, t: Throwable) {
+                Log.d("onFailure", "onFailure: ${t.localizedMessage}")
+            }
+
+        })
+    }
+
+    fun observeSearchMealsLiveData():LiveData<List<Meal>>{
+        return searchMealsLiveData
     }
 
 }

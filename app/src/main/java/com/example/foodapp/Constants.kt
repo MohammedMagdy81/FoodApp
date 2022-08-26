@@ -7,4 +7,12 @@ object Constants {
     const val MEAL_THUMB="mealThumb"
     const val CATEGORY_NAME="categoryName"
     const val DATABASE_NAME="db-Name"
+
+
+
+
+    // splash
+    //fix UNDO problem
+    // enable search feature
+    // clickOnItem
 }

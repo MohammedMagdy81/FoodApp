@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.foodapp.Constants
 import com.example.foodapp.databinding.ActivityMealBinding
-import com.example.foodapp.db.MealsDatabase
 import com.example.foodapp.pojo.Meal
 import com.example.foodapp.viewModel.HomeViewModel
 import com.example.foodapp.viewModel.MealDetailsViewModel
@@ -35,7 +34,7 @@ class MealActivity : AppCompatActivity() {
         mealDetailsViewModel= ViewModelProvider(this)[MealDetailsViewModel::class.java]
 
         getMealInformation()
-        setInformationTpMealActivity()
+        setInformationToMealActivity()
         loadCase()
         mealDetailsViewModel.getMealDetailsById(mealID)
         observeToMealDetails()
@@ -67,7 +66,7 @@ class MealActivity : AppCompatActivity() {
         }
     }
 
-    private fun setInformationTpMealActivity() {
+    private fun setInformationToMealActivity() {
         binding.collapsingtoolbar.title= mealName
         Glide.with(this)
             .load(mealThumb)

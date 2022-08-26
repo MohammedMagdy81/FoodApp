@@ -7,16 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.foodapp.Constants
+import com.example.foodapp.R
 import com.example.foodapp.activities.CategoryMealsActivity
 import com.example.foodapp.activities.MainActivity
 import com.example.foodapp.activities.MealActivity
 import com.example.foodapp.adapter.CategoriesAdapter
 import com.example.foodapp.adapter.PopularMealAdapter
 import com.example.foodapp.databinding.FragmentHomeBinding
+import com.example.foodapp.fragment.bottomsheet.MealBottomSheetFragment
 import com.example.foodapp.pojo.Category
 import com.example.foodapp.pojo.MealsByCategory
 import com.example.foodapp.pojo.Meal
@@ -50,10 +55,6 @@ class HomeFragment : Fragment() {
         prepareCategoriesRecyclerView()
 
         initClickListener()
-
-
-
-        homeViewModel.getRandomMeal()
         observeRandomViewModel()
 
         homeViewModel.getPopularItem("Seafood")
@@ -105,11 +106,22 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        popularMealAdapter.onLongItemClick= {meal->
+            val mealBottomSheetFragment= MealBottomSheetFragment.newInstance(meal.idMeal)
+            mealBottomSheetFragment.show(childFragmentManager,"Meal ")
+        }
+
+
         categoriesAdapter.onItemClick={category->
             val intent= Intent(activity,CategoryMealsActivity::class.java)
             intent.putExtra(Constants.CATEGORY_NAME,category.strCategory)
             startActivity(intent)
         }
+
+        homeBinding.imageSearch.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
+
     }
 
     private fun sendDataToMealActivity(intent: Intent) {
